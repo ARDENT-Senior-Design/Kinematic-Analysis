@@ -2,7 +2,7 @@
 %% Calcultate the transform from the center of the body to a leg
 syms t_d t_y t_r t_p a_b0
 
-t_d = 0.785;
+t_d = pi();
 a_b0 = 0.2
 t_y = 0;
 t_r = 0;
@@ -10,12 +10,12 @@ t_p = 0;
 % Angles for displacement for the leg, yaw, roll, and pitch 
 % a_b0: radial distance to leg
 
-Tz = [cos(t_d+t_y) -sin(t_d+t_y) 0 0;
-      sin(t_d+t_y) cos(t_d+t_y) 0 0;
+Tz = [cos(t_d+t_y) -sin(t_d+t_y) 0 a_b0*cos(t_d);
+      sin(t_d+t_y) cos(t_d+t_y) 0 a_b0*sin(t_d);
       0 0 1 0;
       0 0 0 1];
   
-Tx = [1 0 0 a_b0;
+Tx = [1 0 0 0;
     0 cos(t_r) -sin(t_r) 0;
     0 sin(t_r) cos(t_r) 0;
     0 0 0 1];
@@ -24,7 +24,7 @@ Ty = [cos(t_p) 0 sin(t_p) 0
       -sin(t_p) 0 cos(t_p) 0
       0 0 0 1];
 
-T_b0 = Tx*Ty*Tz 
+T_b0 = Tx*Ty*Tz
 
 %% Calculate the position from the body origin to the foot
 
@@ -43,8 +43,8 @@ syms t b1 a
 % a_3e: distance from tibia joint to end effector
 
 t = 0;
-b1 =0;
-a=0;
+b1 = 0;
+a = 0;
 
 T_01 = [cos(t) -sin(t) 0 0;
         sin(t) cos(t)  0 0;
