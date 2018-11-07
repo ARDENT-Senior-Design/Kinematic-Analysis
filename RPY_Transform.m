@@ -91,7 +91,7 @@ P_2e  = P_ee(1)^2 + P_ee(3)^2;   % calculate the hypotenuse^2 from femur joint t
 
 alpha = atan2(-P_ee(3),P_ee(1))%-0.5*pi();   % calculate part of the b1 angle 
 
-num = (a_23^2+P_2e-a_3e^2)/(2.0*a_23*sqrt(P_2e));
+num = (a_23^2+P_2e-a_3e^2)/(2.0*a_23*sqrt(P_2e));   %cos() from law of cosines
 if num>1 % constrain 0->pi or 0->-pi
    num = 1;
 end
