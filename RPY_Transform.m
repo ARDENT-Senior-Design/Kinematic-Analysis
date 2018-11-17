@@ -1,4 +1,3 @@
-
 %% Calcultate the transform from the center of the body to a leg
 syms t_d t_y t_r t_p a_b0
 
