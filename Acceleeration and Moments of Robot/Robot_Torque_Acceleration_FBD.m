@@ -37,7 +37,7 @@ T_jy1=m_femur*dddot_Ray1+Ty+w_femur
 R_a = [a_12/2 0 0]
 R_j = [a_12 0 0]
 M_a = cross((R_b-R_a),-[Tx Ty 0]')+cross((R_j-R_a),[T_jx1 T_jy1 0]')
-
+% wrong ( I think ), I need to double check
 
 function [R_01,R_12,R_23,r] = FK(th_1, th_2, th_3)
 g_off = deg2rad(60); % offset angle between legs
