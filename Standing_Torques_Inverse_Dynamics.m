@@ -50,7 +50,7 @@ I(3,1) = I(1,3);
 I(3,3) = i3+m3*r3^2
 
 th_ddot1 = 0;
-th_ddot2 = 0;
+th_ddot2 = 8;
 th_ddot3 = 0;
 T = I*[th_ddot1; th_ddot2; th_ddot3]-(V+G)
 % numbers roughly check out. %T(1) is basically useless, but it shows what
