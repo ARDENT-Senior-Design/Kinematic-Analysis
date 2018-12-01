@@ -23,7 +23,7 @@ r3 = l3/2;
 
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless inclined
 th2 = deg2rad(0); % femur angle relative to body
-th3 = deg2rad(0); % tibia angle relative to femur angle
+th3 = deg2rad(-45); % tibia angle relative to femur angle
 
 N = m1*9.8;  % the force on the foot should be half the weight of the robot
 
@@ -33,8 +33,8 @@ G(3) = -g*((N*l3/g+m3*r3)*cos(th1+th2+th3));
 G = G'
 
 th_dot1 = 0;
-th_dot2 = 6.25; %rad/s roughly 60rpm
-th_dot3 = 6.25;
+th_dot2 = 0.025; %rad/s
+th_dot3 = 0.025;
 
 V(1) = (th_dot2^2)*(m2*l1*r2*sin(th2))+(th_dot1*th_dot2)*(2*m2*l1*r2*sin(th2)); % might be slightly wrong
 V(2) = (th_dot3^2)*(m3*l2*r3*sin(th3))+(th_dot3*th_dot2)*(2*m3*l2*r3*sin(th3));
@@ -55,8 +55,8 @@ I(3,1) = I(1,3);
 I(3,3) = i3+m3*r3^2
 
 th_ddot1 = 0;
-th_ddot2 = 20;   % accelerate to 0.025 rad/s in 1/200th of second
-th_ddot3 = 20;
+th_ddot2 = 5;   % accelerate to 
+th_ddot3 = 5;
 T = I*[th_ddot1; th_ddot2; th_ddot3]-(V+G)
 % numbers roughly check out. %T(1) is basically useless, but it shows what
 % the torque for the other leg is.
