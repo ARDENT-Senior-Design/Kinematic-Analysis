@@ -2,30 +2,25 @@ clc;
 clear all;
 
 %% Full body Inverse Dynamics of a standing hexapod robot with 3 legs down
-%      ...o------o----C----o  
-%    th3 /      th2       th1
-%       /
-%      /
-%
 % SI units
 g = 9.8;
-m = 21; %kg
+m = ; %kg
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 m2 = 0.8; % estimated mass with the motors in the middle of the leg
 m3 = 0.8;
 
-l1 = 0.4;   % width of the chassis
-l2 = 0.15;  % length of the femur
-l3 = 0.25;  % length of the tibia
+l1 = 0.4;
+l2 = 0.15;
+l3 = 0.25;
 r1 = l1/2;
 r2 = l2/2;
 r3 = l3/2;
 
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless inclined
-th2 = deg2rad(0); % femur angle relative to body
-th3 = deg2rad(-45); % tibia angle relative to femur angle
+th2 = deg2rad(0);
+th3 = deg2rad(0);
 
-N = m1*9.8;  % the force on the foot should be half the weight of the robot
+N = 0.5*m*9.8;  % the force on the foot should be half the weight of the robot
 
 G(1) = -g*((N*l1/g+m3*l1+m2*l1+m1*r1)*cos(th1) + (N*l2/g+m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3)); 
 G(2) = -g*((N*l2/g+m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3));
