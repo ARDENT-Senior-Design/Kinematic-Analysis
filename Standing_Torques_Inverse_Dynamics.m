@@ -36,7 +36,7 @@ th_dot1 = 0;
 th_dot2 = 5;
 th_dot3 = 5;
 
-V(1) = (th_dot2^2)*(m2*l1*r2*sin(th2))+(th_dot1*th_dot2)*(2*m2*l1*r2*sin(th2)); % might be wrong
+V(1) = (th_dot2^2)*(m2*l1*r2*sin(th2))+(th_dot1*th_dot2)*(2*m2*l1*r2*sin(th2)); % might be slightly wrong
 V(2) = (th_dot3^2)*(m3*l2*r3*sin(th3))+(th_dot3*th_dot2)*(2*m3*l2*r3*sin(th3));
 V(3) = -(th_dot2^2)*(m3*l2*r3*sin(th3));
 V = V'
@@ -46,7 +46,7 @@ i1 = 0.1;
 i2 = 0.1;
 i3 = 0.1;
 
-I(1,1) = i1+i2+i3+m2*l1^2+m3*l1^2+m1*r1^2+m2*r2^2+m3*r3^2+2*m2*l1*r2*cos(th2)+2*m3*l2*r3*cos(th3); % might be wrong
+I(1,1) = i1+i2+i3+m2*l1^2+m3*l1^2+m1*r1^2+m2*r2^2+m3*r3^2+2*m2*l1*r2*cos(th2)+2*m3*l2*r3*cos(th3); % might be slightly wrong
 I(1,2) = i2+i3+m3*l1^2+m2*r2^2+m3*r3^2+m3*l2*r3*cos(th2);
 I(1,3) = i3+m3*r3^2+m3*l2*r3*cos(th2);
 I(2,1) = I(1,2);
