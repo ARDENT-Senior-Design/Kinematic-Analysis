@@ -9,10 +9,11 @@ clear all;
 %
 % SI units
 g = 9.8;
-m = 21; %kg
-m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
+
 m2 = 0.8; % estimated mass with the motors in the middle of the leg
 m3 = 0.8;
+m = 21; %kg : mass of three legs+chassis
+m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
 l1 = 0.4;   % width of the chassis
 l2 = 0.15;  % length of the femur
@@ -52,7 +53,7 @@ I(1,3) = i3+m3*r3^2+m3*l2*r3*cos(th2);
 
 I(2,1) = I(1,2);
 I(2,2) = i2+i3+m2*r2^2+m3*r3^2+m3*l1^2;
-I(2,3) = 
+I(2,3) = i3+m3*l2*r3*cos(th3);
 
 I(3,1) = I(1,3);
 I(3,2) = I(2,3);

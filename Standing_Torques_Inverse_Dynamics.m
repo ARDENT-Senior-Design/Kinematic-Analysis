@@ -9,10 +9,11 @@ clear all;
 %
 % SI units
 g = 9.8;
-m = 21; %kg
-m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
+
 m2 = 0.8; % estimated mass with the motors in the middle of the leg
 m3 = 0.8;
+m = 3*(m2+m3+0.05)+0.6*6+2.3+5.6+1.68 %kg : mass of everything except 3 legs (excluding coxa)
+m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
 l1 = 0.4;   % width of the chassis
 l2 = 0.15;  % length of the femur
@@ -59,7 +60,7 @@ I(3,2) = I(2,3);
 I(3,3) = i3+m3*r3^2
 
 th_ddot1 = 0;
-th_ddot2 = 20;   % accelerate to 0.025 rad/s in 1/200th of second
+th_ddot2 = 20;   % accelerate to 0.025 rad/s2 in 1/200th of second
 th_ddot3 = 20;
 T = I*[th_ddot1; th_ddot2; th_ddot3]-(V+G)
 % numbers roughly check out. %T(1) is basically useless and there to prove
