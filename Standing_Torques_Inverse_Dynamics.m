@@ -68,7 +68,8 @@ T = I*[th_ddot1; th_ddot2; th_ddot3]-(V+G)
 
 %% Torque required to walk forward at varying inclines
 % T=T1-F1(L1cos(th1)+L2cos(th2))-L3Wx+2*F2*(2*L3+L1*cos(th1)+L2*cos(th2))
-% Calculates the torque required to stay stationary on an incline.
+% Calculates the torque required to stay stationary on an incline, doesn't
+% include dynamics
 us = 0.5;   % Coefficient of friction
 B = deg2rad(90); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
