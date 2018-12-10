@@ -1,6 +1,5 @@
 clc;
 clear all;
-
 %% Full body Inverse Dynamics of a standing hexapod robot with 3 legs down
 %      ...o------o----C----o  
 %    th3 /      th2       th1
@@ -12,8 +11,8 @@ g = 9.8;
 
 m2 = 0.8; % estimated mass with the motors in the middle of the leg
 m3 = 0.8;
-m = 3*(m2+m3+0.05)+0.6*6+2.3+5.6+1.68 %kg : mass of everything except 3 legs (excluding coxa)
-m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
+m = 0 %kg : mass of everything except 3 legs (excluding coxa)
+m1 = 0; %For side with 1 leg down, it should take roughly half the weight of the robot
 
 l1 = 0.4;   % width of the chassis
 l2 = 0.15;  % length of the femur
@@ -30,7 +29,7 @@ N = m1*g;  % the force on the foot should be half the weight of the robot
 
 G(1) = -g*((N*l1/g+m3*l1+m2*l1+m1*r1)*cos(th1) + (N*l2/g+m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3)); 
 G(2) = -g*((N*l2/g+m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3));
-G(3) = -g*((N*l3/g+m3*r3)*cos(th1+th2+th3));
+G(3) = -g*((N*l3/g+m3*r3)*cos(th1+th2+th2));
 G = G'
 
 th_dot1 = 0;
@@ -65,25 +64,3 @@ th_ddot3 = 20;
 T = I*[th_ddot1; th_ddot2; th_ddot3]-(V+G)
 % numbers roughly check out. %T(1) is basically useless and there to prove
 % body torques
-
-%% Torque required to walk forward at varying inclines
-% T=T1-F1(L1cos(th1)+L2cos(th2))-L3Wx+2*F2*(2*L3+L1*cos(th1)+L2*cos(th2))
-% Calculates the torque required to stay stationary on an incline, doesn't
-% include dynamics
-us = 0.5;   % Coefficient of friction
-a = 5;
-B = deg2rad(45); %incline of slope
-F_f =us*N*cos(B)   % force required due to friction
-F(2) = F_f/2;
-F(1) = F(2)*2; 
-T1 = F(1)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) - 2*F(2)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2))+m*a*l3/2
-   
-if T1 < 0
-    T1 = m*a*l3/2
-    T2 = m*a*l3/2
-else
-    T2 =  2*F(2)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) -F(1)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2)) +m*a*l3/2
-    T2_n = T2/2
-end
-% hello there
-
