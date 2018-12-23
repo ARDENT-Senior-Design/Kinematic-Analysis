@@ -8,6 +8,12 @@ clear all;
 %      /
 %
 % SI units
+%
+%
+%   THIS CALCULATOR ASSUMES THE COXA LENGTH IS 0 FOR SIMPLICITY
+%
+
+
 g = 9.8;
 
 m2 = 0.8; % estimated mass with the motors in the middle of the leg
@@ -78,7 +84,7 @@ wx=0;wy=0;wz=0; %angular end effector velocity
 w_joints = [ 0; 1; 1]
 
 k=[0;0;1]; %k constant
-a1=.1;a2=.15;a3=.25; %link lengths
+a1=0;a2=.15;a3=.25; %link lengths
 %syms a1 a2 a3
 H0_1 = [cosd(T1) 0 sind(T1) a1*cosd(T1);
         sind(T1) 0  -cos(T1) a1*sind(T1);
