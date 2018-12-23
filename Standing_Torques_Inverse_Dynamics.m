@@ -143,10 +143,11 @@ F(1) = F(2)*2;
 T1 = F(1)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) - 2*F(2)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2))+m*a*l3/2
    
 if T1 < 0
-    T1 = 0
-    T2 = 0
+    T1 = m*a*l3/2
+    T2 = m*a*l3/2
 else
     T2 =  2*F(2)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) -F(1)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2)) +m*a*l3/2
     T2_n = T2/2
 end
+% hello there
 
