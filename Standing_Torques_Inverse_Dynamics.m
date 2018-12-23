@@ -71,23 +71,30 @@ th_ddot3 = 20;
 
 
 % calculate the jacobian for the external force acting on it
-T1=0;T2=45;T3=45; %angles of joints
-a1=.1;a2=.15;a3=.25; %link lengths
+T1=0;T2=0;T3=0; %angles of joints
+% syms T1 T2 T3
+xdot=0;ydot=1;zdot=0; %end effector linear velocity
+wx=0;wy=0;wz=0; %angular end effector velocity
+w_joints = [ 0; 1; 1]
 
-H0_1 = [cos(T1) -sin(T1) 0 a1;
-        sin(T1) cos(T1)  0 0;
-        0       0      1 0;
+k=[0;0;1]; %k constant
+a1=.1;a2=.15;a3=.25; %link lengths
+%syms a1 a2 a3
+H0_1 = [cosd(T1) 0 sind(T1) a1*cosd(T1);
+        sind(T1) 0  -cos(T1) a1*sind(T1);
+        0       1     0 0;
         0       0      0 1];
     
-H1_2 = [cos(T2) -sin(T2) 0 a2;
-        0       0      -1 0;
-        sin(T2) cos(T2) 0 0;
-        0       0      0 1];
-   
-H2_3 = [cos(T3) -sin(T3) 0 a3;
-        sin(T3) cos(T3)  0 0;
+H1_2 = [cosd(T2) -sind(T2) 0 a2*cosd(T2);
+        sind(T2)       cosd(T2)      0 a2*sind(T2);
         0       0      1 0;
         0       0      0 1];
+   
+H2_3 = [cosd(T3) -sind(T3) 0 a3*cosd(T3);
+        sind(T3)       cosd(T3)      0 a3*sind(T3);
+        0       0      1 0;
+        0       0      0 1];
+
 R0_0 = [1 0 0; 0 1 0; 0 0 1];
 R0_1 = H0_1(1:3,1:3);
 R1_2 = H1_2(1:3,1:3);
@@ -98,9 +105,9 @@ R0_3=H0_3(1:3,1:3);
 
 
 k=[0;0;1]; %k constant
-k0_0=R0_0*k; %Z column for rotation matrix at the origin X's k-constant
-k0_1=R0_1*k; %Z column for rotation matrix from coxa to femur X's k-constant
-k0_2=R0_2*k;%Z column for rotation matrix from coxa to tibia X's k-constant
+k0_0=R0_0*k %Z column for rotation matrix at the origin X's k-constant
+k0_1=R0_1*k %Z column for rotation matrix from coxa to femur X's k-constant
+k0_2=R0_2*k%Z column for rotation matrix from coxa to tibia X's k-constant
 
 dz1=H0_3(1:3,4); %displacment from the homogenous matrix for coxa to end effector
 dz2=H0_3(1:3,4)-H0_1(1:3,4);%displacement for coxa to end effector minus coxa to femur
@@ -119,14 +126,10 @@ Jv=[jx jy jz] %jacobian linear matrix. Wrong, it should include a jx component b
 Jw=[jwx jwy jwz] %jacobian angular matirx
 
 Jaco=[Jv; Jw]
-Jaco'
-%eev=[xdot; ydot; zdot]
-%eew=[wx; wy; wz]
-% vel = Jaco*eev
 
-x = Jaco'*[0,N,0,0,0,0]'
+x = Jaco'*[0,0,N,0,0,0]'
 
-T = I*[th_ddot1; th_ddot2; th_ddot3]+(V+G')
+T = I*[th_ddot1; th_ddot2; th_ddot3]+(V+G')+x
 % numbers roughly check out. %T(1) is basically useless and there to prove
 % body torques
 
