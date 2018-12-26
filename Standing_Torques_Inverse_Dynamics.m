@@ -35,10 +35,6 @@ th3 = deg2rad(0); % tibia angle relative to femur angle
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
 
-% G(1) = -g*((N*l1/g+m3*l1+m2*l1+m1*r1)*cos(th1) + (N*l2/g+m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3)); 
-% G(2) = -g*((N*l2/g+m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3));
-% G(3) = -g*((N*l3/g+m3*r3)*cos(th1+th2+th3));
-% G = G'
 
 G(1) =g*((m3*l1+m2*l1+m1*r1)*cos(th1) + (m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3)); 
 G(2) =g*((m3*l2+m2*r2)*cos(th1+th2) + (m3*r3)*cos(th1+th2+th3));
