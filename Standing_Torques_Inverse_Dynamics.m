@@ -16,21 +16,21 @@ clear all;
 
 g = 9.8;
 
-m2 = 0.8; % estimated mass with the motors in the middle of the leg
-m3 = 0.8;
-m = 3*(m2+m3+0.05)+0.6*6+2.3+5.6+1.68 %kg : mass of everything except 3 legs (excluding coxa)
+m2 = 1.2; % estimated mass with the motors in the middle of the leg
+m3 = 0.4;
+m = 3*(m2+m3+0.05)+0.6*6+2.3+5.6+1.68+0.4*6; %kg : mass of everything except 3 legs (excluding coxa)
 m_total = m+3*(m2+m3+0.05)
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
 l1 = 0.4;   % width of the chassis
-l2 = 0.15;  % length of the femur
+l2 = 0.2;  % length of the femur
 l3 = 0.25;  % length of the tibia
 r1 = l1/2;
 r2 = l2/2;
 r3 = l3/2;
 
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless inclined
-th2 = deg2rad(0); % femur angle relative to body
+th2 = deg2rad(90); % femur angle relative to body
 th3 = deg2rad(0); % tibia angle relative to femur angle
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
@@ -73,7 +73,7 @@ th_ddot3 = 20;
 
 
 % calculate the jacobian for the external force acting on it
-T1=0;T2=0;T3=0; %angles of joints
+T1=0;T2=th2;T3=th3; %angles of joints
 % syms T1 T2 T3
 xdot=0;ydot=1;zdot=0; %end effector linear velocity
 wx=0;wy=0;wz=0; %angular end effector velocity
@@ -82,18 +82,18 @@ w_joints = [ 0; 1; 1]
 k=[0;0;1]; %k constant
 a1=0;a2=.15;a3=.25; %link lengths
 %syms a1 a2 a3
-H0_1 = [cosd(T1) 0 sind(T1) a1*cosd(T1);
-        sind(T1) 0  -cos(T1) a1*sind(T1);
+H0_1 = [cos(T1) 0 sin(T1) a1*cos(T1);
+        sin(T1) 0  -cos(T1) a1*sin(T1);
         0       1     0 0;
         0       0      0 1];
     
-H1_2 = [cosd(T2) -sind(T2) 0 a2*cosd(T2);
-        sind(T2)       cosd(T2)      0 a2*sind(T2);
+H1_2 = [cos(T2) -sin(T2) 0 a2*cos(T2);
+        sin(T2)       cos(T2)      0 a2*sin(T2);
         0       0      1 0;
         0       0      0 1];
    
-H2_3 = [cosd(T3) -sind(T3) 0 a3*cosd(T3);
-        sind(T3)       cosd(T3)      0 a3*sind(T3);
+H2_3 = [cos(T3) -sin(T3) 0 a3*cos(T3);
+        sin(T3)       cos(T3)      0 a3*sin(T3);
         0       0      1 0;
         0       0      0 1];
 
