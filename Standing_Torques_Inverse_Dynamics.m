@@ -16,13 +16,26 @@ clear all;
 
 g = 9.8;
 
-m2 = 1.2; % estimated mass with the motors in the middle of the leg
-m3 = 0.4;
-m = 3*(m2+m3+0.05)+0.6*6+2.3+5.6+1.68+0.4*6; %kg : mass of everything except 3 legs (excluding coxa)
-m_total = m+3*(m2+m3+0.05)
+% Weight factor of safety
+FoS = 1.25;
+
+femur_motor_m = 0.7;
+femur_link_m = .15;
+femur_gearbox_m = 0.8;
+m2 = femur_motor_m+femur_link_m+femur_gearbox_m;%1.2; % estimated mass with the motors in the middle of the leg
+
+tibia_motor_m = 0.7;
+tibia_link_m = .15;
+tibia_gearbox_m = 0.8;
+m3 = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
+
+electronics_weight = 10;
+sensor_weight =2.3;
+m = (3*(m2+m3+0.05)+m3*6+2.3+10+1.68)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
+m_total = m+(3*(m2+m3+0.05))*FoS
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
-l1 = 0.4;   % width of the chassis
+l1 = 0.4;   % width of the chassis (Ignore this value)
 l2 = 0.2;  % length of the femur
 l3 = 0.25;  % length of the tibia
 r1 = l1/2;
@@ -30,7 +43,7 @@ r2 = l2/2;
 r3 = l3/2;
 
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless inclined
-th2 = deg2rad(90); % femur angle relative to body
+th2 = deg2rad(30); % femur angle relative to body
 th3 = deg2rad(0); % tibia angle relative to femur angle
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
@@ -141,7 +154,7 @@ T = I*[th_ddot1; th_ddot2; th_ddot3]+(V+G')+x
 % include dynamics
 us = 0.5;   % Coefficient of friction
 a = 5;
-B = deg2rad(45); %incline of slope
+B = deg2rad(40); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
 F(2) = F_f/2;
 F(1) = F(2)*2; 
