@@ -8,31 +8,41 @@ clear all;
 %      /
 %
 % SI units
-%
+% 
 %
 %   THIS CALCULATOR ASSUMES THE COXA LENGTH IS 0 FOR SIMPLICITY
 %
+motor_in_link = false;
 
 
 g = 9.8;
 
 % Weight factor of safety
 FoS = 1.25;
+% count = 1;
+
+%  for count=1:1:45
 
 femur_motor_m = 0.7;
-femur_link_m = .15;
+femur_link_m = .25;
 femur_gearbox_m = 0.8;
-m2 = femur_motor_m+femur_link_m+femur_gearbox_m;%1.2; % estimated mass with the motors in the middle of the leg
+m2_link = femur_motor_m+femur_link_m+femur_gearbox_m;%1.2; % estimated mass with the motors in the middle of the leg
+m2_joint = femur_motor_m+femur_gearbox_m;
 
-tibia_motor_m = 0.7;
-tibia_link_m = .15;
-tibia_gearbox_m = 0.8;
-m3 = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
 
-electronics_weight = 10;
+tibia_motor_m = 0.345;
+tibia_link_m = .25;
+tibia_gearbox_m = 0.7;
+m3_link = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
+m3_joint = femur_motor_m+femur_gearbox_m;
+
+battery_weight_increase = 3;
+electronics_weight = 4+battery_weight_increase;
 sensor_weight =2.3;
-m = (3*(m2+m3+0.05)+m3*6+2.3+10+1.68)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
-m_total = m+(3*(m2+m3+0.05))*FoS
+chassis_weight=2;
+
+m = (3*(m2_link+m3_link+0.05)+m3_link*6+sensor_weight+electronics_weight+chassis_weight)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
+m_total = m+(3*(m2_link+m3_link+0.05))*FoS
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
 l1 = 0.4;   % width of the chassis (Ignore this value)
@@ -42,48 +52,84 @@ r1 = l1/2;
 r2 = l2/2;
 r3 = l3/2;
 
-th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless inclined
-th2 = deg2rad(30); % femur angle relative to body
-th3 = deg2rad(0); % tibia angle relative to femur angle
+th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined
+th2 = deg2rad(0); % femur angle relative to body
+th3 = deg2rad(30); % tibia angle relative to femur angle
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
 
-
-G(1) =g*((m3*l1+m2*l1+m1*r1)*cos(th1) + (m3*l2+m2*r2)*cos(th1+th2) + (N*l3/g+m3*r3)*cos(th1+th2+th3)); 
-G(2) =g*((m3*l2+m2*r2)*cos(th1+th2) + (m3*r3)*cos(th1+th2+th3));
-G(3) =g*((m3*r3)*cos(th1+th2+th3));
-G = G
-
 th_dot1 = 0;
-th_dot2 = 6.25; %rad/s roughly 60rpm
-th_dot3 = 6.25;
-
-V(1) = (th_dot2^2)*(m2*l1*r2*sin(th2))+(th_dot1*th_dot2)*(2*m2*l1*r2*sin(th2)); % might be slightly wrong
-V(2) = (th_dot3^2)*(m3*l2*r3*sin(th3))+(th_dot3*th_dot2)*(2*m3*l2*r3*sin(th3));
-V(3) = (th_dot2^2)*(m3*l2*r3*sin(th3));
-V = V'
-
+th_dot2 = 20; %rad/s roughly 60rpm
+th_dot3 = 20;
 % Inertias are about the CoG for 1,2,3
 i1 = 0.76
 i2 = 0.0013;    
 i3 = 0.0036;
 
-I(1,1) = i1+i2+i3+m1*r1^2+m2*(l1^2+r2^2+2*l1*r2*cos(th2))+m3*(l1^2+r3^2+2*l2*r3*cos(th3)); % lengths might be slightly wrong
-I(1,2) = i2+i3+m2*r2^2+m3*(l1^2+r3^2+l2*r3*cos(th2));
-I(1,3) = i2+i3+m3*r3^2+m3*l2*r3*cos(th2);
-
-I(2,1) = I(1,2);
-I(2,2) = i2+i3+m2*r2^2+m3*(r3^2+l2^2+2*r3*l2*cos(th3));
-I(2,3) = i3+m3*(r3^2+l2*r3*cos(th3));
-
-I(3,1) = I(1,3);
-I(3,2) = I(2,3);
-I(3,3) = i3+m3*r3^2
-
 th_ddot1 = 0;
-th_ddot2 = 20;   % accelerate to 0.025 rad/s2 in 1/200th of second
-th_ddot3 = 20;
+th_ddot2 = 40;   % accelerate to 0.025 rad/s2 in 1/200th of second
+th_ddot3 = 40;
 
+
+
+if motor_in_link == true
+  
+    
+    G(1) = 0;%g*((m3_link*l1+m2_link*l1+m1*r1)*cos(th1) + (m3_link*l2+m2_link*r2)*cos(th1+th2) + (N*l3/g+m3_link*r3)*cos(th1+th2+th3)); 
+    G(2) =g*((m3_link*l2+m2_link*r2)*cos(th1+th2) + (m3_link*r3)*cos(th1+th2+th3));
+    G(3) =g*((m3_link*r3)*cos(th1+th2+th3));
+    G = G'
+
+
+
+    V(1) = 0;% (th_dot2^2)*(m2_link*l1*r2*sin(th2))+(th_dot1*th_dot2)*(2*m2_link*l1*r2*sin(th2)); % might be slightly wrong
+    V(2) = (th_dot2^2)*(m3_link*l2*r3*sin(th3))+(th_dot3*th_dot2)*(2*m3_link*l2*r3*sin(th3));
+    V(3) = (th_dot3^2)*(m3_link*l2*r3*sin(th3));
+    V = V'
+
+
+
+    I(1,1) = i1+i2+i3+m1*r1^2+m2_link*(l1^2+r2^2+2*l1*r2*cos(th2))+m3_link*(l1^2+r3^2+2*l2*r3*cos(th3)); % lengths might be slightly wrong
+    I(1,2) = i2+i3+m2_link*r2^2+m3_link*(l1^2+r3^2+l2*r3*cos(th2));
+    I(1,3) = i2+i3+m3_link*r3^2+m3_link*l2*r3*cos(th2);
+
+    I(2,1) = I(1,2);
+    I(2,2) = i2+i3+m2_link*r2^2+m3_link*(r3^2+l2^2+2*r3*l2*cos(th3));
+    I(2,3) = i3+m3_link*(r3^2+l2*r3*cos(th3));
+
+    I(3,1) = I(1,3);
+    I(3,2) = I(2,3);
+    I(3,3) = i3+m3_link*r3^2
+
+else
+    
+    G(1) =0;%g*((m3_joint*l1+femur_link_m*l1+m1*r1)*cos(th1) + (m3_joint*l2+femur_link_m*r2)*cos(th1+th2) )+ (N*l3/g+m3*r3)*cos(th1+th2+th3)); % ignore
+    G(2) =g*((m3_joint*l2+femur_link_m*r2)*cos(th1+th2) + (tibia_link_m*r3)*cos(th1+th2+th3));
+    G(3) =g*((tibia_link_m*r3)*cos(th1+th2+th3));
+    G = G'
+
+
+
+    V(1) = 0;% (th_dot2^2)*(femur_link_m*l1*r2*sin(th2))+(th_dot1*th_dot2)*(2*femur_link_m*l1*r2*sin(th2)); % ignore
+    V(2) = (th_dot2^2)*(m3_link*l2*r3*sin(th3))+(th_dot3*th_dot2)*(2*tibia_link_m*l2*r3*sin(th3));
+    V(3) = (th_dot3^2)*(tibia_link_m*l2*r3*sin(th3));
+    V = V'
+
+
+
+    I(1,1) = i1+i2+i3+m1*r1^2+femur_link_m*(l1^2+r2^2+2*l1*r2*cos(th2))+m3_link*(l1^2+r3^2+2*l2*r3*cos(th3)); % ignore
+    I(1,2) = i2+i3+femur_link_m*r2^2+m3_link*(l1^2+r3^2+l2*r3*cos(th2));
+    I(1,3) = i2+i3+m3_link*r3^2+m3_link*l2*r3*cos(th2);
+
+    I(2,1) = I(1,2);
+    I(2,2) = i2+i3+femur_link_m*r2^2+m3_link*(r3^2+l2^2+2*r3*l2*cos(th3));
+    I(2,3) = i3+m3_link*(r3^2+l2*r3*cos(th3));
+
+    I(3,1) = I(1,3);
+    I(3,2) = I(2,3);
+    I(3,3) = i3+m3_link*r3^2
+
+end
 
 % calculate the jacobian for the external force acting on it
 T1=0;T2=th2;T3=th3; %angles of joints
@@ -93,7 +139,7 @@ wx=0;wy=0;wz=0; %angular end effector velocity
 w_joints = [ 0; 1; 1]
 
 k=[0;0;1]; %k constant
-a1=0;a2=.15;a3=.25; %link lengths
+a1=0;a2=.2;a3=.25; %link lengths
 %syms a1 a2 a3
 H0_1 = [cos(T1) 0 sin(T1) a1*cos(T1);
         sin(T1) 0  -cos(T1) a1*sin(T1);
@@ -142,19 +188,26 @@ Jw=[jwx jwy jwz] %jacobian angular matirx
 
 Jaco=[Jv; Jw]
 
-x = Jaco'*[0,0,N,0,0,0]'
+x = Jaco'*[0,0,N,0,0,0]'    % apply a force load in the vertical z-direction 
 
-T = I*[th_ddot1; th_ddot2; th_ddot3]+(V+G')+x
+T = I*[th_ddot1; th_ddot2; th_ddot3]+V+G+x
 % numbers roughly check out. %T(1) is basically useless and there to prove
 % body torques
-
+% Torque_at_battery_weight(1, count) = electronics_weight;
+% Torque_at_battery_weight(2:4,count) = T(:,1)
+% end
+% plot(Torque_at_battery_weight(1,:),Torque_at_battery_weight(3,:), 'o', Torque_at_battery_weight(1,:),Torque_at_battery_weight(4,:),'x');
+% xlabel('Battery Weight [kg]');
+% ylabel('Torque Required');
+% legend('Femur','Tibia');
+% hold on;
 %% Torque required to walk forward at varying inclines
 % T=T1-F1(L1cos(th1)+L2cos(th2))-L3Wx+2*F2*(2*L3+L1*cos(th1)+L2*cos(th2))
 % Calculates the torque required to stay stationary on an incline, doesn't
 % include dynamics
 us = 0.5;   % Coefficient of friction
 a = 5;
-B = deg2rad(40); %incline of slope
+B = deg2rad(0); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
 F(2) = F_f/2;
 F(1) = F(2)*2; 
