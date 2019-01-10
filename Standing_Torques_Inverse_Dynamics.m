@@ -25,7 +25,7 @@ FoS = 1.25;
 % Masses of the robot and components
 femur_motor_m = 0.7;    % Mass of the motor
 femur_link_m = .1; % Mass of the link 
-femur_gearbox_m = 0.8;  % Mass of the gearbox attached to motor
+femur_gearbox_m = 0.8;  % Mass of the gearbox attached to motor 1:25
 femur_joint_m = 0.15;   % Mass of the joint structure
 m2_link = femur_motor_m+femur_link_m+femur_gearbox_m; % estimated mass with the motors in the middle of the leg
 m2_joint = femur_motor_m+femur_gearbox_m+femur_joint_m;   % estimated mass with the motors in the joint
@@ -70,6 +70,7 @@ th3 = deg2rad(-30); % tibia angle relative to femur angle.
 N = m1*g;  % the force on the foot should be half the weight of the robot
 
 % Angular velocities in rad/s.
+% Keep these at 0 for standing
 th_dot1 = 0;
 th_dot2 = 0; %rad/s roughly 60rpm
 th_dot3 = 0;
@@ -94,8 +95,8 @@ end
 if motor_in_link == true
   
     G(1) = 0;% we don't need the data for the chassis
-    G(2) =g*((m3_link*l2+m2_link*r2)*cos(th1+th2) + (m3_link*r3)*cos(th1+th2+th3));
-    G(3) =g*((m3_link*r3)*cos(th1+th2+th3));
+    G(2) = g*((m3_link*l2+m2_link*r2)*cos(th1+th2) + (m3_link*r3)*cos(th1+th2+th3));
+    G(3) = g*((m3_link*r3)*cos(th1+th2+th3));
     G = G'
 
     V(1) = 0; % we don't need the data for the chassis
@@ -212,7 +213,7 @@ T = x-(I*[th_ddot1; th_ddot2; th_ddot3]+V+G+D*[th_dot1; th_dot2; th_dot3])
 % include dynamics
 us = 0.5;   % Coefficient of friction
 a = 5;  % Forward acceleration of the robot
-B = deg2rad(40); %incline of slope
+B = deg2rad(0); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
 F(2) = F_f/2;
 F(1) = F(2)*2; 
