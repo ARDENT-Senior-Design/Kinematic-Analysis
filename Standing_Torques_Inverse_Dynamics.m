@@ -24,31 +24,32 @@ FoS = 1.25;
 
 % Masses of the robot and components
 femur_motor_m = 0.7;    % Mass of the motor
-femur_link_m = .25; % Mass of the link 
+femur_link_m = .1; % Mass of the link 
 femur_gearbox_m = 0.8;  % Mass of the gearbox attached to motor
 femur_joint_m = 0.15;   % Mass of the joint structure
 m2_link = femur_motor_m+femur_link_m+femur_gearbox_m; % estimated mass with the motors in the middle of the leg
 m2_joint = femur_motor_m+femur_gearbox_m+femur_joint_m;   % estimated mass with the motors in the joint
 
 
-tibia_motor_m = 0.345;
-tibia_link_m = .25;
+tibia_motor_m = 0.325;
+tibia_link_m = .1;
 tibia_gearbox_m = 0.7;
 tibia_joint_m = 0.15;
 m3_link = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
 m3_joint = femur_motor_m+femur_gearbox_m+tibia_joint_m;
 
 
-
 battery_weight_increase = 3;
 electronics_weight = 4+battery_weight_increase;
 sensor_weight =2.3;
 chassis_weight=2;
-
-m = (3*(m2_link+m3_link+0.05)+m3_link*6+sensor_weight+electronics_weight+chassis_weight)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
-m_total = m+(3*(m2_link+m3_link+0.05))*FoS
+                                                                                                    % |
+                                                                                                    %\l/-----m3_link is basically the coxa here
+m = (3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05)+m3_link*6+sensor_weight+electronics_weight+chassis_weight)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
+m_total = m+(3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))*FoS
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
+% Dimensions of leg
 l1 = 0.4;   % width of the chassis (Ignore this value)
 l2 = 0.2;  % length of the femur
 l3 = 0.25;  % length of the tibia
@@ -56,26 +57,36 @@ r1 = l1/2;
 r2 = l2/2;
 r3 = l3/2;
 
+% Angle of the joints
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined. Doesn't really matter now.
-th2 = deg2rad(0); % femur angle relative to body
-th3 = deg2rad(-30); % tibia angle relative to femur angle
+th2 = deg2rad(0); % femur angle relative to body. 
+                             % Peak Torque Condition: th2 = 0
+th3 = deg2rad(-30); % tibia angle relative to femur angle.  
+                               %Peak Torque Condition: th3 = -30
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
 
-% Angular velocities in rad/s
+% Angular velocities in rad/s.
 th_dot1 = 0;
 th_dot2 = 20; %rad/s roughly 60rpm
 th_dot3 = 20;
 
-% Inertias are about the CoG for 1,2,3
-i1 = 0.76 % this doesn't matter anymore
-i2 = 0.0013;    
-i3 = 0.0036;
 
 % Accelerations of the joints rad/s^2
 th_ddot1 = 0;
 th_ddot2 = 40;   % accelerate to 0.025 rad/s2 in 1/200th of second
 th_ddot3 = 40;
+
+% Inertias are about the CoG for 1,2,3
+i1 = 0 % this doesn't matter anymore
+if motor_in_link == true
+    i2 = (1/12)*m2_link*l2^2;    
+    i3 =  (1/12)*m3_link*l2^2;
+else
+    i2 = (1/12)*femur_link_m*l2^2;    
+    i3 =  (1/12)*tibia_link_m*l2^2;
+end
+
 
 % see: http://www-lar.deis.unibo.it/people/cmelchiorri/Files_Robotica/FIR_05_Dynamics.pdf
 
@@ -196,7 +207,7 @@ Jaco=[Jv; Jw]
 
 x = Jaco'*[0,0,N,0,0,0]'    % apply a force load in the vertical z-direction 
 
-T = I*[th_ddot1; th_ddot2; th_ddot3]+V+G+x
+T = x-(I*[th_ddot1; th_ddot2; th_ddot3]+V+G)
 
 %% Torque required to walk forward at varying inclines
 % T=T1-F1(L1cos(th1)+L2cos(th2))-L3Wx+2*F2*(2*L3+L1*cos(th1)+L2*cos(th2))
