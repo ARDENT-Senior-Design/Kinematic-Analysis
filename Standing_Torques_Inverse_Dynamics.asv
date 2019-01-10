@@ -22,23 +22,19 @@ g = 9.8;
 % Weight factor of safety
 FoS = 1.25;
 
-% Masses of the robot and components
-femur_motor_m = 0.7;    % Mass of the motor
-femur_link_m = .25; % Mass of the link 
-femur_gearbox_m = 0.8;  % Mass of the gearbox attached to motor
-femur_joint_m = 0.15;   % Mass of the joint structure
-m2_link = femur_motor_m+femur_link_m+femur_gearbox_m; % estimated mass with the motors in the middle of the leg
-m2_joint = femur_motor_m+femur_gearbox_m+femur_joint_m;   % estimated mass with the motors in the joint
+% Masses of the robot and compone
+femur_motor_m = 0.7;
+femur_link_m = .25;
+femur_gearbox_m = 0.8;
+m2_link = femur_motor_m+femur_link_m+femur_gearbox_m;%1.2; % estimated mass with the motors in the middle of the leg
+m2_joint = femur_motor_m+femur_gearbox_m;
 
 
 tibia_motor_m = 0.345;
 tibia_link_m = .25;
 tibia_gearbox_m = 0.7;
-tibia_joint_m = 0.15;
 m3_link = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
-m3_joint = femur_motor_m+femur_gearbox_m+tibia_joint_m;
-
-
+m3_joint = femur_motor_m+femur_gearbox_m;
 
 battery_weight_increase = 3;
 electronics_weight = 4+battery_weight_increase;
@@ -56,7 +52,7 @@ r1 = l1/2;
 r2 = l2/2;
 r3 = l3/2;
 
-th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined. Doesn't really matter now.
+th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined
 th2 = deg2rad(0); % femur angle relative to body
 th3 = deg2rad(-30); % tibia angle relative to femur angle
 
@@ -91,8 +87,10 @@ if motor_in_link == true
 
     V(1) = 0; % we don't need the data for the chassis
     V(2) = -m3_link*l2*r3*sin(th3)*(th_dot2*th_dot3+th_dot3^2);
-    V(3) = -m3_link*l2*r3*sin(th3)*(-(th_dot2^2));
+    V(3) = -m3_link*l2*r3*sin(th3)*(-th_dot2^2);
     V = V'
+
+
 
     I(1,1) =0; % we don't need the data for the chassis
     I(1,2) = 0;
@@ -108,14 +106,13 @@ if motor_in_link == true
 
 else
     
-    % G(q)
     G(1) =0;
     G(2) =g*((m3_link*l2+femur_link_m*r2)*cos(th1+th2) + (m3_link*r3)*cos(th1+th2+th3));
     G(3) =g*((tibia_link_m*r3)*cos(th1+th2+th3));
     G = G'
 
 
-    % V(q,q_dot)q_dot
+
     V(1) = 0; % we don't need the data for the chassis
     V(2) = -m3_link*l2*r3*sin(th3)*(th_dot2*th_dot3+th_dot3^2);
     V(3) = -m3_link*l2*r3*sin(th3)*(-th_dot2^2);
