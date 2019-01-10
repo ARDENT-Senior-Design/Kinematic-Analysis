@@ -73,7 +73,6 @@ th_dot1 = 0;
 th_dot2 = 20; %rad/s roughly 60rpm
 th_dot3 = 20;
 
-
 % Accelerations of the joints rad/s^2
 th_ddot1 = 0;
 th_ddot2 = 40;   % accelerate to 0.025 rad/s2 in 1/200th of second
@@ -89,12 +88,10 @@ else
     i3 =  (1/12)*tibia_link_m*l2^2;
 end
 
-
 % see: http://www-lar.deis.unibo.it/people/cmelchiorri/Files_Robotica/FIR_05_Dynamics.pdf
 
 if motor_in_link == true
   
-    
     G(1) = 0;% we don't need the data for the chassis
     G(2) =g*((m3_link*l2+m2_link*r2)*cos(th1+th2) + (m3_link*r3)*cos(th1+th2+th3));
     G(3) =g*((m3_link*r3)*cos(th1+th2+th3));
@@ -204,7 +201,9 @@ Jaco=[Jv; Jw]
 
 x = Jaco'*[0,0,N,0,0,0]'    % apply a force load in the vertical z-direction 
 
-T = x-(I*[th_ddot1; th_ddot2; th_ddot3]+V+G)
+
+D = diag([0.0, 0.01, 0.01])    % friction
+T = x-(I*[th_ddot1; th_ddot2; th_ddot3]+V+G+D*[th_dot1; th_dot2; th_dot3])
 
 %% Torque required to walk forward at varying inclines
 % T=T1-F1(L1cos(th1)+L2cos(th2))-L3Wx+2*F2*(2*L3+L1*cos(th1)+L2*cos(th2))
