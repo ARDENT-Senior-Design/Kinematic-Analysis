@@ -70,13 +70,13 @@ N = m1*g;  % the force on the foot should be half the weight of the robot
 
 % Angular velocities in rad/s.
 th_dot1 = 0;
-th_dot2 = 20; %rad/s roughly 60rpm
-th_dot3 = 20;
+th_dot2 = -20; %rad/s roughly 60rpm
+th_dot3 = -20;
 
 % Accelerations of the joints rad/s^2
 th_ddot1 = 0;
-th_ddot2 = 40;   % accelerate to 0.025 rad/s2 in 1/200th of second
-th_ddot3 = 40;
+th_ddot2 = -40;   % accelerate to 0.025 rad/s2 in 1/200th of second
+th_ddot3 = -40;
 
 % Inertias are about the CoG for 1,2,3
 i1 = 0 % this doesn't matter anymore
