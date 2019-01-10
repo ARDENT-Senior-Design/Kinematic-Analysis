@@ -46,6 +46,7 @@ chassis_weight=2;
                                                                                                     % |
                                                                                                     %\l/-----m3_link is basically the coxa here
 m = (3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05)+m3_link*6+sensor_weight+electronics_weight+chassis_weight)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
+m_total_no_FoS =  (m/FoS)+(3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))
 m_total = m+(3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))*FoS
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
@@ -70,8 +71,8 @@ N = m1*g;  % the force on the foot should be half the weight of the robot
 
 % Angular velocities in rad/s.
 th_dot1 = 0;
-th_dot2 = -20; %rad/s roughly 60rpm
-th_dot3 = -20;
+th_dot2 = 0; %rad/s roughly 60rpm
+th_dot3 = 0;
 
 % Accelerations of the joints rad/s^2
 th_ddot1 = 0;
