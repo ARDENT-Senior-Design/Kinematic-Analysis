@@ -60,9 +60,11 @@ r3 = l3/2;
 % Angle of the joints
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined. Doesn't really matter now.
 th2 = deg2rad(0); % femur angle relative to body. 
-                             % Peak Torque Condition: th2 = 0
+                             % Peak Torque Combination Condition 1: th2 = 0
+                             % Peak Torque Combination Condition 2: th2 = -30
 th3 = deg2rad(-30); % tibia angle relative to femur angle.  
-                               %Peak Torque Condition: th3 = -30
+                               %Peak Torque Combination Condition 1: th3 = -30
+                               %Peak Torque Combination Condition 2: th3 = 0
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
 
@@ -98,8 +100,6 @@ if motor_in_link == true
     G(3) =g*((m3_link*r3)*cos(th1+th2+th3));
     G = G'
 
-
-
     V(1) = 0; % we don't need the data for the chassis
     V(2) = -m3_link*l2*r3*sin(th3)*(th_dot2*th_dot3+th_dot3^2);
     V(3) = -m3_link*l2*r3*sin(th3)*(-(th_dot2^2));
@@ -125,14 +125,11 @@ else
     G(3) =g*((tibia_link_m*r3)*cos(th1+th2+th3));
     G = G'
 
-
     % V(q,q_dot)q_dot
     V(1) = 0; % we don't need the data for the chassis
     V(2) = -m3_link*l2*r3*sin(th3)*(th_dot2*th_dot3+th_dot3^2);
     V(3) = -m3_link*l2*r3*sin(th3)*(-th_dot2^2);
     V = V'
-
-
 
     I(1,1) =0; % we don't need the data for the chassis
     I(1,2) = 0;
@@ -214,19 +211,19 @@ T = x-(I*[th_ddot1; th_ddot2; th_ddot3]+V+G)
 % Calculates the torque required to stay stationary on an incline, doesn't
 % include dynamics
 us = 0.5;   % Coefficient of friction
-a = 5;
-B = deg2rad(0); %incline of slope
+a = 5;  % Forward acceleration of the robot
+B = deg2rad(40); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
 F(2) = F_f/2;
 F(1) = F(2)*2; 
-T1 = F(1)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) - 2*F(2)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2))+m*a*l3/2
+T1 = F(1)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) - 2*F(2)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2))+m*a*l3/2;
    
 if T1 < 0
     T1 = m*a*l3/2
     T2 = m*a*l3/2
 else
     T2 =  2*F(2)*(l3*cos(th1+th2+th3)+l2*cos(th1+th2))+(l1/2)*(m*g*sin(B)) -F(1)*(l1+l3*cos(th1+th2+th3)+l2*cos(th1+th2)) +m*a*l3/2
-    T2_n = T2/2
+    T2_n = T2/2;
 end
 % hello there
 
