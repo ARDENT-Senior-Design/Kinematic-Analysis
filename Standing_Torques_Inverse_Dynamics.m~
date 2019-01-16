@@ -62,9 +62,9 @@ r3 = l3/2;
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined. Doesn't really matter now.
 th2 = deg2rad(0); % femur angle relative to body. 
                              % Peak Torque Combination Condition 1: th2 = 0
-                             % Peak Torque Combination Condition 2: th2 = 30
+                             % Peak Torque Combination Condition 2: th2 = -30
 th3 = deg2rad(30); % tibia angle relative to femur angle.  
-                               %Peak Torque Combination Condition 1: th3 = 30
+                               %Peak Torque Combination Condition 1: th3 = -30
                                %Peak Torque Combination Condition 2: th3 = 0
 
 N = m1*g;  % the force on the foot should be half the weight of the robot
