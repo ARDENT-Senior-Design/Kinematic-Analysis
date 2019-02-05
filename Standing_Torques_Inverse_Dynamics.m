@@ -22,19 +22,22 @@ g = 9.8;
 % Weight factor of safety
 FoS = 1.25;
 
+% legs
+num_legs = 4;
+
 % Masses of the robot and components
 femur_motor_m = 0.7;    % Mass of the motor
 femur_link_m = .1; % Mass of the link 
-femur_gearbox_m = 0.8;  % Mass of the gearbox attached to motor 1:25
-femur_joint_m = 0.15;   % Mass of the joint structure
+femur_gearbox_m = 0.85;  % Mass of the gearbox attached to motor 1:25
+femur_joint_m = 0.35;   % Mass of the joint structure
 m2_link = femur_motor_m+femur_link_m+femur_gearbox_m; % estimated mass with the motors in the middle of the leg
 m2_joint = femur_motor_m+femur_gearbox_m+femur_joint_m;   % estimated mass with the motors in the joint
 
 
-tibia_motor_m = 0.325;
+tibia_motor_m = 0.35;
 tibia_link_m = .1;
-tibia_gearbox_m = 0.7;
-tibia_joint_m = 0.15;
+tibia_gearbox_m = 0.6;
+tibia_joint_m = 0.35;
 m3_link = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
 m3_joint = femur_motor_m+femur_gearbox_m+tibia_joint_m;
 
@@ -42,12 +45,12 @@ m3_joint = femur_motor_m+femur_gearbox_m+tibia_joint_m;
 battery_weight_increase = 7;
 electronics_weight = 5+battery_weight_increase;
 sensor_weight =2.3;
-chassis_weight=2;
+chassis_weight=2.0;
                                                                                                     % |
                                                                                                     %\l/-----m3_link is basically the coxa here
-m = (3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05)+m3_link*6+sensor_weight+electronics_weight+chassis_weight)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
-m_total_no_FoS =  (m/FoS)+(3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))
-m_total = m+(3*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))*FoS
+m = ((num_legs-3)*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05)+m3_link*num_legs+sensor_weight+electronics_weight+chassis_weight)*FoS; %kg : mass of everything except 3 legs (excluding coxa)
+m_total_no_FoS =  (m/FoS)+((num_legs-(num_legs-3))*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))
+m_total = m+((num_legs-(num_legs-3))*(m2_link+femur_joint_m+m3_link+tibia_joint_m+0.05))*FoS
 m1 = m/2; %For side with 1 leg down, it should take roughly half the weight of the robot
 
 % Dimensions of leg
@@ -57,6 +60,7 @@ l3 = 0.25;  % length of the tibia
 r1 = l1/2;
 r2 = l2/2;
 r3 = l3/2;
+
 
 % Angle of the joints
 th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably be at zero unless body is inclined. Doesn't really matter now.
@@ -72,7 +76,7 @@ N = m1*g;  % the force on the foot should be half the weight of the robot
 % Angular velocities in rad/s.
 % Keep these at 0 for standing
 th_dot1 = 0;
-th_dot2 = 0; %rad/s roughly 60rpm
+th_dot2 = 0; %rad/s 
 th_dot3 = 0;
 
 % Accelerations of the joints rad/s^2
@@ -204,16 +208,16 @@ Jaco=[Jv; Jw]
 x = Jaco'*[0,0,N,0,0,0]'    % apply a force load in the vertical z-direction 
 
 
-D = diag([0.0, 0.01, 0.01])    % friction
+D = diag([0.0, 0.00, 0.00])    % friction
 T = x+(I*[th_ddot1; th_ddot2; th_ddot3]+V+G+D*[th_dot1; th_dot2; th_dot3])
-
+T_half = T/2
 %% Torque required to walk forward at varying inclines
 % T=T1-F1(L1cos(th1)+L2cos(th2))-L3Wx+2*F2*(2*L3+L1*cos(th1)+L2*cos(th2))
 % Calculates the torque required to stay stationary on an incline, doesn't
 % include dynamics
 us = 0.5;   % Coefficient of friction
 a = 5;  % Forward acceleration of the robot
-B = deg2rad(45); %incline of slope
+B = deg2rad(0); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
 F(2) = F_f/2;
 F(1) = F(2)*2; 
