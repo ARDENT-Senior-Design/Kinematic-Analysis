@@ -27,17 +27,17 @@ num_legs = 4;
 
 % Masses of the robot and components
 femur_motor_m = 0.7;    % Mass of the motor
-femur_link_m = .1; % Mass of the link 
+femur_link_m = .05; % Mass of the link 
 femur_gearbox_m = 0.85;  % Mass of the gearbox attached to motor 1:25
-femur_joint_m = 0.35;   % Mass of the joint structure
+femur_joint_m = 0.6;   % Mass of the joint structure
 m2_link = femur_motor_m+femur_link_m+femur_gearbox_m; % estimated mass with the motors in the middle of the leg
 m2_joint = femur_motor_m+femur_gearbox_m+femur_joint_m;   % estimated mass with the motors in the joint
 
 
 tibia_motor_m = 0.35;
-tibia_link_m = .1;
+tibia_link_m = .05;
 tibia_gearbox_m = 0.6;
-tibia_joint_m = 0.35;
+tibia_joint_m = 0.3;
 m3_link = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
 m3_joint = femur_motor_m+femur_gearbox_m+tibia_joint_m;
 
