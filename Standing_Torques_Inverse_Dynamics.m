@@ -16,7 +16,7 @@ clear all;
 %
 motor_in_link = false;
 
-
+%% 
 g = 9.8;
 
 % Weight factor of safety
@@ -42,8 +42,8 @@ m3_link = tibia_motor_m+tibia_link_m+tibia_gearbox_m;
 m3_joint = femur_motor_m+femur_gearbox_m+tibia_joint_m;
 
 
-battery_weight_increase = 7;
-electronics_weight = 5+battery_weight_increase;
+battery_weight_increase = 18.5;
+electronics_weight = 0+battery_weight_increase;
 sensor_weight =2.3;
 chassis_weight=2.0;
                                                                                                     % |
@@ -217,7 +217,7 @@ T_half = T/2
 % include dynamics
 us = 0.5;   % Coefficient of friction
 a = 5;  % Forward acceleration of the robot
-B = deg2rad(0); %incline of slope
+B = deg2rad(40); %incline of slope
 F_f =us*N*cos(B)   % force required due to friction
 F(2) = F_f/2;
 F(1) = F(2)*2; 
