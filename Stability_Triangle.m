@@ -1,13 +1,19 @@
 clc;
 clear all;
-
+%  Hex
 %     (2)  O
 %            |   \
 %            |     O (1)
 %            |   /
 %     (3) O
 %
-
+%  Quadruped
+%     (2)  O -  - O (1)
+%            |       /
+%            |     / 
+%            |   / 
+%     (3) O
+%
 c = [0,0];
 walking_height = 0.2;
 r = 0.2;
