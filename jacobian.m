@@ -1,12 +1,12 @@
 clc; clear;
 T1=0;T2=0;T3=0; %angles of joints
 % syms T1 T2 T3
-xdot=0;ydot=1;zdot=0; %end effector linear velocity
+xdot=0;ydot=0;zdot=10.0; %end effector linear velocity
 wx=0;wy=0;wz=0; %angular end effector velocity
-w_joints = [ 0; 1; 1]
+w_joints = [ 0; 0; 0]
 
 k=[0;0;1]; %k constant
-a1=.1;a2=.15;a3=.25; %link lengths
+a1=.1;a2=.25;a3=.25; %link lengths
 %syms a1 a2 a3
 H0_1 = [cosd(T1) 0 sind(T1) a1*cosd(T1);
         sind(T1) 0  -cos(T1) a1*sind(T1);
@@ -37,7 +37,7 @@ k0_0=R0_0*k %Z column for rotation matrix at the origin X's k-constant
 k0_1=R0_1*k %Z column for rotation matrix from coxa to femur X's k-constant
 k0_2=R0_2*k%Z column for rotation matrix from coxa to tibia X's k-constant
 
-dz1=H0_3(1:3,4); %displacment from the homogenous matrix for coxa to end effector
+dz1=H0_3(1:3,4) %displacment from the homogenous matrix for coxa to end effector
 dz2=H0_3(1:3,4)-H0_1(1:3,4);%displacement for coxa to end effector minus coxa to femur
 dz3=H0_3(1:3,4)-H0_2(1:3,4);%displacement for coxa to end effector minus coxa to tibia
 
@@ -57,6 +57,6 @@ Jaco=[Jv; Jw]
 eev=[xdot; ydot; zdot; wx; wy; wz];
 vel = Jaco*w_joints  % the velocitites are based on the axis of the base origin
 
-%w_joint_ik = (Jv)\eev(1:3)%joint velocity matrix = inverse jacobian X's end effector linear velocity matrix
+w_joint_ik = (Jaco)\eev %joint velocity matrix = inverse jacobian X's end effector linear velocity matrix J^(-1)*ee_dot = q_dot
 %Tdotw=inv(Jw) %joint velocity matrix = inverse jacobian X's end effector angular velocity matrix
 

@@ -67,7 +67,7 @@ th1 = deg2rad(0); % angle of the body from the opposite leg. This would probably
 th2 = deg2rad(0); % femur angle relative to body. 
                              % Peak Torque Combination Condition 1: th2 = 0
                              % Peak Torque Combination Condition 2: th2 = 30
-th3 = deg2rad(30); % tibia angle relative to femur angle.  
+th3 = deg2rad(0); % tibia angle relative to femur angle.  
                                %Peak Torque Combination Condition 1: th3 = 30
                                %Peak Torque Combination Condition 2: th3 = 0
 
@@ -87,11 +87,11 @@ th_ddot3 = 1;
 % Inertias are about the CoG for 1,2,3
 i1 = 0 % this doesn't matter anymore
 if motor_in_link == true
-    i2 = (1/12)*m2_link*l2^2;    
-    i3 =  (1/12)*m3_link*l2^2;
+    i2 = (1/12)*m2_link*l2^2   
+    i3 =  (1/12)*m3_link*l2^2
 else
-    i2 = (1/12)*femur_link_m*l2^2;    
-    i3 =  (1/12)*tibia_link_m*l2^2;
+    i2 = (1/12)*femur_link_m*l2^2    
+    i3 =  (1/12)*tibia_link_m*l2^2
 end
 
 % see: http://www-lar.deis.unibo.it/people/cmelchiorri/Files_Robotica/FIR_05_Dynamics.pdf
@@ -209,6 +209,8 @@ x = Jaco'*[0,0,N,0,0,0]'    % apply a force load in the vertical z-direction
 
 
 D = diag([0.0, 0.00, 0.00])    % friction
+I
+I*[th_ddot1; th_ddot2; th_ddot3]
 T = x+(I*[th_ddot1; th_ddot2; th_ddot3]+V+G+D*[th_dot1; th_dot2; th_dot3])
 T_half = T/2
 %% Torque required to walk forward at varying inclines
